@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
@@ -15,20 +16,41 @@ import kotlinx.android.synthetic.main.activity_main.*
  * Location should be given to get the wifi states..
  *
  */
+
 class MainActivity : AppCompatActivity() {
     private lateinit var wifiManager: WifiManager
+    lateinit var results: MutableList<ScanResult>
+    val flag = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         wifiManager = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         registerWifiReceiver()
 
-        //For Manual Scan
+        //For Manual Scan and checking all results
         scanBtn.setOnClickListener {
-            val result = wifiManager.scanResults
-            Log.d("ranjan", "getWifi: $result")
+            results = wifiManager.scanResults
+            Log.d("ranjan", "getWifi: $results")
+            var str=""
+            for (i in 0 until results.size) {
+               str+=results[i].SSID.toString()+"\n"
+            }
+            text.text=str.toString()
+        }
+
+        gps.setOnClickListener {
+            if(flag) {
+                val intent = Intent("android.location.GPS_ENABLED_CHANGE")
+                intent.putExtra("enabled", true)
+                sendBroadcast(intent)
+            }else{
+                val intent = Intent("android.location.GPS_ENABLED_CHANGE")
+                intent.putExtra("enabled", false)
+                sendBroadcast(intent)
+            }
         }
     }
+
 
     private fun registerWifiReceiver() {
 
@@ -51,12 +73,14 @@ class MainActivity : AppCompatActivity() {
      * For automatically getting wifi data
      */
     private fun scanSuccess() {
-        val results = wifiManager.scanResults
+        results = wifiManager.scanResults
         Log.d("ranjan", "scanSuccess: ${results.toString()}")
+
+
     }
 
     private fun scanFailure() {
-        val results = wifiManager.scanResults
+        results = wifiManager.scanResults
         Log.d("ranjan", "scanFailure: ${results.toString()}")
     }
 
