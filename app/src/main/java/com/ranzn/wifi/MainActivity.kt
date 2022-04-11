@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private lateinit var wifiManager: WifiManager
     lateinit var results: MutableList<ScanResult>
-    val flag = false
+    var flag = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,25 +30,10 @@ class MainActivity : AppCompatActivity() {
         //For Manual Scan and checking all results
         scanBtn.setOnClickListener {
             results = wifiManager.scanResults
-            Log.d("ranjan", "getWifi: $results")
-            var str=""
-            for (i in 0 until results.size) {
-               str+=results[i].SSID.toString()+"\n"
-            }
-            text.text=str.toString()
+            Log.d("ranjan", "onCreate: $results")
+            setText()
         }
 
-        gps.setOnClickListener {
-            if(flag) {
-                val intent = Intent("android.location.GPS_ENABLED_CHANGE")
-                intent.putExtra("enabled", true)
-                sendBroadcast(intent)
-            }else{
-                val intent = Intent("android.location.GPS_ENABLED_CHANGE")
-                intent.putExtra("enabled", false)
-                sendBroadcast(intent)
-            }
-        }
     }
 
 
@@ -74,14 +59,21 @@ class MainActivity : AppCompatActivity() {
      */
     private fun scanSuccess() {
         results = wifiManager.scanResults
-        Log.d("ranjan", "scanSuccess: ${results.toString()}")
+        setText()
 
 
     }
 
     private fun scanFailure() {
         results = wifiManager.scanResults
-        Log.d("ranjan", "scanFailure: ${results.toString()}")
+        setText()
     }
 
+    private fun setText() {
+        var str = ""
+        for (i in 0 until results.size) {
+            str += results[i].SSID.toString() + "\n"
+        }
+        text.text = str.toString()
+    }
 }

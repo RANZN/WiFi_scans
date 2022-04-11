@@ -14,13 +14,6 @@
         android:layout_margin="15dp"
         android:text="Scan WiFi" />
 
-    <Button
-        android:id="@+id/gps"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:text="Turn On GPS" />
-
     <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
